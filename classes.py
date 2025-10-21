@@ -24,11 +24,21 @@ class Conta:
         destino_conta.depositar (valor)
         self.__extrato.append (f"Transferência efetuado para a conta {destino_conta.numero}")
 
-class Banco:
-    def __init__(self):
-        pass
-
 class Cliente:
-    def __init__(self):
-        pass
+    def __init__(self, nome, cpf, senha):
+        self.__nome = nome
+        self.__cpf = cpf
+        self.__senha = senha 
+        self.__contas = []
+
+
+    def certificar (self, senha):
+        return self.__senha == senha
+    
+    def adicionar_conta (self, conta):
+        self.__contas.append (conta)
+
+class Banco:
+    def __init__(self, ):
+        pass       
 
