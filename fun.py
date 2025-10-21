@@ -56,6 +56,7 @@ def menu():
         pause()
 
 
+
 def cadastro():
     limpar()
     print("Bem vindo ao banco nexus")
@@ -65,10 +66,10 @@ def cadastro():
     except ValueError:
         msg_erro()
         pause()
-
+ 
     try:
         cpf = int(
-            input("Informe seu cpf apenas com números sem espaços: ")
+            input("Informe seu CPF apenas com números sem espaços: ")
         )  # CPF como inteiro
     except ValueError:
         msg_erro()
@@ -87,6 +88,7 @@ def cadastro():
 
     # Retorna o dicionário para ser adicionado ao dicionário principal "usuarios"
     usuarios.update(usuario)
+
 
 
 def login():
