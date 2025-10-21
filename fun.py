@@ -1,6 +1,7 @@
 import os
 from classes import *
 
+
 def limpar():
     os.system("cls")
 
@@ -13,8 +14,10 @@ def menu():
     e = int(input("Escolha uma opção: "))
     return e
 
+
 def cadastro():
     pass
+
 
 def login():
     pass
