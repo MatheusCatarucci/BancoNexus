@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 from datetime import *
 
-# Classe abstrata que define as operações financeiras básicas
+# Interface que define as operações financeiras básicas
 class OperacoesFinanceiras(ABC):
     # Método abstrato para saque — deve ser implementado nas subclasses
     @abstractmethod
@@ -33,15 +33,21 @@ class Banco:
         for cliente in self.__clientes:
             if cliente.get_cpf() == cpf:
                 return cliente
-        return None  # Retorna None se o cliente não for encontrado
+        else:
+            return None  # Retorna None se o cliente não for encontrado
+        
+    def getClientes(self):
+        return self.__clientes
 
 
 # Classe que representa um cliente do banco
 class Cliente:
-    def __init__(self, nome, cpf, contas):
-        self.__nome = nome  # Nome do cliente
-        self.__cpf = cpf    # CPF do cliente
-        self.__contas = []  # Lista de contas do cliente (pode ter mais de uma)
+    def __init__(self, nome, cpf, senha):
+        self.__nome = nome      # Nome do cliente
+        self.__cpf = cpf        # CPF do cliente
+        self.__senha = senha    # Senha do cliente 
+        self.__contas = []      # Lista de contas do cliente (pode ter mais de uma)
+        self.__saldo = 50000
 
     # Retorna o nome do cliente
     def getNome(self):
@@ -59,6 +65,11 @@ class Cliente:
     def abrirConta(self, conta):
         self.__contas.append(conta)
 
+    def getSaldo(self):
+        return self.__saldo
+    
+    def getSenha(self):
+        return self.__senha
 
 # Classe abstrata que representa uma conta bancária genérica
 class Conta(OperacoesFinanceiras, ABC):
