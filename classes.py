@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABC
 from datetime import *
 
+
 # Interface que define as operações financeiras básicas
 class OperacoesFinanceiras(ABC):
     # Método abstrato para saque — deve ser implementado nas subclasses
@@ -35,7 +36,7 @@ class Banco:
                 return cliente
         else:
             return None  # Retorna None se o cliente não for encontrado
-        
+
     def getClientes(self):
         return self.__clientes
 
@@ -43,10 +44,10 @@ class Banco:
 # Classe que representa um cliente do banco
 class Cliente:
     def __init__(self, nome, cpf, senha):
-        self.__nome = nome      # Nome do cliente
-        self.__cpf = cpf        # CPF do cliente
-        self.__senha = senha    # Senha do cliente 
-        self.__contas = []      # Lista de contas do cliente (pode ter mais de uma)
+        self.__nome = nome  # Nome do cliente
+        self.__cpf = cpf  # CPF do cliente
+        self.__senha = senha  # Senha do cliente
+        self.__contas = []  # Lista de contas do cliente (pode ter mais de uma)
         self.__saldo = 50000
 
     # Retorna o nome do cliente
@@ -67,9 +68,10 @@ class Cliente:
 
     def getSaldo(self):
         return self.__saldo
-    
+
     def getSenha(self):
         return self.__senha
+
 
 class Extrato:
     def __init__(self):
@@ -77,11 +79,13 @@ class Extrato:
 
     # Adiciona uma operação ao extrato (saque, depósito, etc.)
     def adicionarOperacao(self, tipo, valor):
-        self.__operacoes.append({
-            "tipo": tipo,
-            "valor": valor,
-            "data": datetime.now()  # Registra a data e hora da operação
-        })
+        self.__operacoes.append(
+            {
+                "tipo": tipo,
+                "valor": valor,
+                "data": datetime.now(),  # Registra a data e hora da operação
+            }
+        )
 
     # Exibe o extrato formatado no console
     def mostrarExtrato(self):
