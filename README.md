@@ -27,3 +27,6 @@ A conta deve conter as seguintes funções:
 |---------|---------|
 | Corrente | Permite saques sem saldo mínimo. |
 | Poupança | Exige saldo mínimo de R$ 100,00 para saques. |
+#### Observações
+- Cada cliente pode contar mais de uma conta
+- Todas as operações devem ser registradas em um extrato vinculado à conta.
