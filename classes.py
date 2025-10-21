@@ -12,7 +12,7 @@ class OperacoesFinanceiras(ABC):
         pass
 
     @abstractmethod
-    def transferir(self, valor, conta_destino):
+    def transferir(self, valor, contaDestino):
         pass
 
 
@@ -49,22 +49,6 @@ class Cliente:
         self.__contas.append(conta)
 
 
-class Conta(OperacoesFinanceiras, ABC):
-    def __init__(self, numero, saldoInicial=0):
-        self.__numero = numero
-        self.__saldo = saldoInicial
-        self.__extrato = []
-
-    def getNumero(self):
-        return self.__numero
-
-    def getSaldo(self):
-        return self.__saldo
-
-    def getExtrato(self):
-        return self.__extrato
-
-
 class Extrato:
     def __init__(self):
         self.__operacoes = []
@@ -80,11 +64,98 @@ class Extrato:
             )
 
 
-class ContaCorrente(Conta):  ## Não terminei
+class Conta(OperacoesFinanceiras, ABC):
+    def __init__(self, numero, saldoInicial=0):
+        self.__numero = numero
+        self.__saldo = saldoInicial
+        self.__extrato = []
+
+    def getNumero(self):
+        return self.__numero
+
+    def getSaldo(self):
+        return self.__saldo
+
+    def getExtrato(self):
+        return self.__extrato
+
+    def alterarSaldo(self, valor):
+        self.__saldo += valor
+
+    def registrarOperacao(self, tipo, valor):
+        self.__extrato.adicionarOperacao(tipo, valor)
+
+
+class ContaCorrente(Conta):
+    def __init__(self, numero, saldoInicial=0):
+        super().__init__(numero, saldoInicial)
+
     def sacar(self, valor):
         if valor <= 0:
             print("Valor inválido para saque.")
             return
-        self._Conta__saldo -= valor
-        self._Conta__extrato.adicionarOperacao("Saque", valor)
+        self.alterarSaldo(-valor)
+        self.registrarOperacao("Saque", valor)
         print(f"Saque de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}")
+
+    def depositar(self, valor):
+        if valor <= 0:
+            print("Depósito inválido.")
+            return
+        self.alterarSaldo(valor)
+        self.registrarOperacao("Depósito", valor)
+        print(
+            f"Depósito de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}"
+        )
+
+    def transferir(self, valor, contaDestino):
+        if valor <= 0 or valor > self.getSaldo():
+            print("Transferência inválida.")
+            return
+
+        self.alterarSaldo(-valor)
+        self.registrarOperacao("Transferência enviada", valor)
+        contaDestino.alterarSaldo(valor)
+        contaDestino.registrarOperacao("Transferência recebida", valor)
+
+        print(
+            f"Transferência de R${valor:.2f} realizada para conta {contaDestino.getNumero()}."
+        )
+
+
+class ContaPoupanca(Conta):
+    def __init__(self, numero, saldoInicial=0):
+        super().__init__(numero, saldoInicial)
+
+    def sacar(self, valor):
+        if valor <= 0:
+            print("Valor inválido para saque.")
+            return
+        if self.getSaldo() - valor < 100:
+            print("Saldo mínimo de R$100,00 exigido para saques.")
+            return
+        self.__saldo -= valor
+        self.__extrato.adicionarOperacao("Saque", valor)
+        print(f"Saque de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}")
+
+    def depositar(self, valor):
+        if valor <= 0:
+            print("Depósito inválido.")
+            return
+        self.__saldo += valor
+        self.__extrato.adicionarOperacao("Depósito", valor)
+        print(
+            f"Depósito de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}"
+        )
+
+    def transferir(self, valor, contaDestino):
+        if valor <= 0 or valor > self.getSaldo():
+            print("Transferência inválida.")
+            return
+        self.__saldo -= valor
+        contaDestino.__saldo += valor
+        self.__extrato.adicionarOperacao("Transferência enviada", valor)
+        contaDestino.__extrato.adicionarOperacao("Transferência recebida", valor)
+        print(
+            f"Transferência de R${valor:.2f} realizada para conta {contaDestino.getNumero()}."
+        )
