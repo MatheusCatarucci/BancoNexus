@@ -60,7 +60,7 @@ def cadastro(banco):
     except ValueError:
         msg_erro()
         pause()
- 
+
     try:
         cpf = int(
             input("Informe seu CPF apenas com números sem espaços: ")
@@ -112,6 +112,7 @@ def autenticar(banco, senha, cpf):
             return cliente
         else:
             return None
+
 
 # Banco (após o login)
 def main(cliente):
