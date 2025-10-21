@@ -29,3 +29,8 @@ A conta deve conter as seguintes funções:
 - Cada cliente pode contar mais de uma conta
 - Todas as operações devem ser registradas em um extrato vinculado à conta.
 
+## 4️⃣ Requisitos Técnicos - POO
+---
+
+## 5️⃣ Diagrama de Classes UML
+[Clique Aqui para acessar o Diagrama de Classes UML](https://lucid.app/lucidchart/fea066e8-6598-4cda-8514-896bf2a63cd4/edit?invitationId=inv_adee2969-7860-4abe-8ec9-08f3c9c67542&page=0_0#)
