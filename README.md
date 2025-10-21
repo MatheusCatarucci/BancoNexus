@@ -10,7 +10,7 @@ Cada integrante do grupo tem as seguintes obrigações:
 1. Matheus: Construção de funções no arquivo fun.py
 2. Guilherme: Construção de classes no arquivo classes.py
 3. Moisés: Construção de classes no arquivo classes.py
-4. Gabriel Leonardo: Diagrama de Classes
+4. Gabriel Leonardo: Diagrama de Classes UML
 5. Gabriel Portocarrero: Documentação no README
 6. João Vitor: Documentação no README
 ## 3️⃣ Requisitos Funcionais 💡
