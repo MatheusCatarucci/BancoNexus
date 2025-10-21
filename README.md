@@ -1,7 +1,5 @@
 # Projeto Avaliativo: Sistema Bancário - NexusBank 💸
 ## 1️⃣ Introdução
-Projeto avaliativo de programação back-end em Python com o objetivo de criar um sistema bancário para uma instituição. O sistema deve conter funções de saque, depósito, transferências e consulta de saldo. O banco deve conter também dois tipos de contas diferentes (Conta Corrente e Conta Poupança), cada um com suas regras, sendo utilizado POO (Programação Orientada a Objetos).
-
 Projeto avaliativo de programação back-end em Python com o objetivo de criar um sistema bancário para uma instituição. O sistema deve conter funções de saque, depósito, transferências e consulta de saldo. O banco deve conter também dois tipos de contas diferentes (Conta Corrente e Conta Poupança), cada um com suas regras, sendo utilizado POO (Programação Orientada a Objetos). Utilizaremos a biblioteca "Getpass", no qual tem a função de ocultar senhas.
 ## 2️⃣ Grupo e obrigações
 Cada integrante do grupo tem as seguintes obrigações:
@@ -29,3 +27,8 @@ A conta deve conter as seguintes funções:
 - Cada cliente pode contar mais de uma conta
 - Todas as operações devem ser registradas em um extrato vinculado à conta.
 
+## 4️⃣ Requisitos Técnicos - POO
+---
+
+## 5️⃣ Diagrama de Classes UML
+[Clique Aqui para acessar o Diagrama de Classes UML](https://lucid.app/lucidchart/fea066e8-6598-4cda-8514-896bf2a63cd4/edit?invitationId=inv_adee2969-7860-4abe-8ec9-08f3c9c67542&page=0_0#)
