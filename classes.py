@@ -63,3 +63,28 @@ class Conta(OperacoesFinanceiras, ABC):
 
     def getExtrato(self):
         return self.__extrato
+
+
+class Extrato:
+    def __init__(self):
+        self.__operacoes = []
+
+    def adicionarOperacao(self, tipo, valor):
+        self.__operacoes.append({"tipo": tipo, "valor": valor, "data": datetime.now()})
+
+    def mostrarExtrato(self):
+        print("=== Extrato ===")
+        for operacao in self.__operacoes:
+            print(
+                f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}"
+            )
+
+
+class ContaCorrente(Conta):  ## Não terminei
+    def sacar(self, valor):
+        if valor <= 0:
+            print("Valor inválido para saque.")
+            return
+        self._Conta__saldo -= valor
+        self._Conta__extrato.adicionarOperacao("Saque", valor)
+        print(f"Saque de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}")
