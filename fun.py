@@ -101,5 +101,3 @@ def login():
     except ValueError:
         msg_erro()
         pause()
-
-# Bugfix
