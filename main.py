@@ -1,14 +1,13 @@
 from fun import *
 
-usuarios = {}
+banco = Banco()
 
 while True:
     match menu():
         case 1:
-            novo_usuario = cadastro()
-            usuarios.update(novo_usuario)
+            cadastro(banco)
         case 2:
-            login()
+            login(banco)
         case 3:
             exit()
         case _:
