@@ -66,7 +66,7 @@ def cadastro():
     except ValueError:
         msg_erro()
         pause()
-
+ 
     try:
         cpf = int(
             input("Informe seu CPF apenas com números sem espaços: ")
