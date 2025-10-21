@@ -39,6 +39,18 @@ class Cliente:
         self.__contas.append (conta)
 
 class Banco:
-    def __init__(self, ):
-        pass       
+    def __init__(self, nome):
+        self.__nome = nome
+        self.__clientes = []
+
+    def adicionar_cliente (self):
+        self.__clientes.append (cliente)
+
+class Extrato:
+    def __init__(self, conta):
+        self.__conta = conta 
+
+    def mostrar_extrato (self):
+        for item in self.__conta.extrato:
+            print (item)
 
