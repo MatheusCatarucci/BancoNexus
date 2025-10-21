@@ -2,11 +2,6 @@ import os
 import getpass
 from classes import *  # importa tudo do arquivo classes.py
 
-# Dicionário global que armazena todos os usuários cadastrados
-# Exemplo de estrutura:
-# usuarios = {12345678900: {"nome": "João", "senha": "123", "saldo": 50000}}
-usuarios = {}
-
 
 # --- FUNÇÕES DE OPERAÇÕES BANCÁRIAS (ainda não implementadas) ---
 def limpar():
@@ -56,8 +51,7 @@ def menu():
         pause()
 
 
-
-def cadastro():
+def cadastro(banco):
     limpar()
     print("Bem vindo ao banco nexus")
 
@@ -66,7 +60,7 @@ def cadastro():
     except ValueError:
         msg_erro()
         pause()
- 
+
     try:
         cpf = int(
             input("Informe seu CPF apenas com números sem espaços: ")
@@ -82,16 +76,11 @@ def cadastro():
         pause()
 
     # Cria o dicionário representando o novo usuário
-    usuario = {
-        cpf: {"nome": nome, "senha": senha, "saldo": 50000}
-    }  # saldo inicial de 50.000
-
-    # Retorna o dicionário para ser adicionado ao dicionário principal "usuarios"
-    usuarios.update(usuario)
+    usuario = Cliente(nome=nome, cpf=cpf, senha=senha)
+    banco.addCliente(usuario)
 
 
-
-def login():
+def login(banco):
     limpar()
     print("Bem vindo ao banco nexus")
 
@@ -108,34 +97,29 @@ def login():
         pause()
 
     # Verifica se o CPF e senha estão corretos
-    if autenticar(cpf, senha, usuarios):
-        banco(cpf)  # entra no menu do banco
+    cliente = autenticar(banco, senha, cpf)
+    if cliente:
+        main(cliente)  # entra no menu do banco
     else:
         limpar()
         print("Usuário não encontrado")
         pause()
 
 
-def autenticar(cpf, senha, usuarios):
-    # Aqui há um pequeno erro lógico:
-    # deve acessar usuarios[cpf]["senha"], não usuarios["senha"]
-    if cpf in usuarios and usuarios[cpf]["senha"] == senha:
-        conta = True
-    else:
-        conta = False
-
-    return conta
+def autenticar(banco, senha, cpf):
+    for cliente in banco.getClientes():
+        if cliente.getCpf() == cpf and cliente.getSenha() == senha:
+            return cliente
+        else:
+            return None
 
 
 # Banco (após o login)
-def banco(cpf):
+def main(cliente):
     while True:
-        usuario = usuarios[
-            cpf
-        ]  # obtém o dicionário com as informações do usuário logado
         limpar()
-        print(f"Usuário: {usuario['nome']}")
-        print(f"Saldo: {usuario['saldo']}")
+        print(f"Usuário: {cliente.getNome()}")
+        print(f"Saldo: {cliente.getSaldo()}")
         print(40 * "-")
         print("1 - Depósito")
         print("2 - Saques")
@@ -143,10 +127,10 @@ def banco(cpf):
         print("4 - Extrato")
 
         try:
-            e = int(
+            escolha = int(
                 input("Escolha uma opção: ")
             )  # tenta converter a escolha em número inteiro
-            return e
+            return escolha
         except ValueError:
             msg_erro()
             pause()
