@@ -1,103 +1,150 @@
 import os
 import getpass
-from classes import *  # importa tudo do arquivo classes.py (ex: classes de usuários ou contas)
+from classes import *  # importa tudo do arquivo classes.py
+
+# Dicionário global que armazena todos os usuários cadastrados
+# Exemplo de estrutura:
+# usuarios = {12345678900: {"nome": "João", "senha": "123", "saldo": 50000}}
+usuarios = {}
 
 
-# Função para limpar o terminal (no Windows usa 'cls')
+# --- FUNÇÕES DE OPERAÇÕES BANCÁRIAS (ainda não implementadas) ---
 def limpar():
     os.system("cls")
 
 
-# Função para pausar a execução até o usuário apertar uma tecla
 def pause():
     os.system("pause")
 
 
-# Função para exibir mensagem padrão de erro
 def msg_erro():
     print("Opção inválida, tente novamente")
 
 
-# Função do menu principal
+# --- FUNÇÕES DE OPERAÇÕES BANCÁRIAS (ainda não implementadas) ---
+def deposito():
+    pass
+    # Depósito deve adicionar um valor ao saldo da conta do usuário
+
+
+def saques():
+    pass
+    # Saque deve subtrair um valor do saldo da conta do usuário
+
+
+def transferencia():
+    pass
+    # Transferência deve subtrair da conta do remetente e adicionar à do destinatário
+
+
+def extrato():
+    pass
+    # Extrato deve exibir o histórico de movimentações da conta
+
+
+# --- FUNÇÕES DE SISTEMA ---
 def menu():
     limpar()
     print("1 - Cadastro")
     print("2 - Login")
     print("3 - Sair")
     try:
-        # Tenta converter a entrada em inteiro
-        escolha = int(input("Escolha uma opção: "))
+        escolha = int(input("Escolha uma opção: "))  # leitura do menu principal
         return escolha
     except ValueError:
-        # Caso o usuário digite algo inválido
         msg_erro()
         pause()
 
 
-# Função para cadastrar novo usuário
 def cadastro():
     limpar()
     print("Bem vindo ao banco nexus")
 
     try:
-        # Solicita o nome do usuário e coloca a primeira letra em maiúsculo
-        nome = input("Informe seu nome: ").capitalize()
+        nome = input("Informe seu nome: ").capitalize()  # primeira letra maiúscula
     except ValueError:
         msg_erro()
         pause()
 
     try:
-        # Solicita o CPF e converte para inteiro
-        cpf = int(input("Informe seu cpf apenas com números sem espaços: "))
+        cpf = int(
+            input("Informe seu cpf apenas com números sem espaços: ")
+        )  # CPF como inteiro
     except ValueError:
         msg_erro()
         pause()
 
     try:
-        # Solicita a senha (sem mostrar na tela)
-        senha = getpass.getpass("Informe sua senha: ")
+        senha = getpass.getpass("Informe sua senha: ")  # senha não aparece na tela
     except ValueError:
         msg_erro()
         pause()
 
-    # Cria o dicionário representando o usuário
-    usuario = {cpf: {"nome": nome, "senha": senha}}
+    # Cria o dicionário representando o novo usuário
+    usuario = {
+        cpf: {"nome": nome, "senha": senha, "saldo": 50000}
+    }  # saldo inicial de 50.000
 
-    # Retorna o dicionário para ser adicionado à lista geral de usuários
-    return usuario
-
-
-# (Código comentado que imprime os usuários cadastrados)
-# for cpf, valores in usuarios.items():
-#     print(f"CPF - {cpf}")
-#     print(f"Nome - {valores['nome']}")
-#     print(f"Senha - {valores['senha']}")
-#     print(20 * "-")
-#     pause()
+    # Retorna o dicionário para ser adicionado ao dicionário principal "usuarios"
+    usuarios.update(usuario)
 
 
-# Função de login
 def login():
     limpar()
     print("Bem vindo ao banco nexus")
 
     try:
-        # Solicita o nome do usuário e coloca a primeira letra em maiúsculo
-        nome = input("Informe seu nome: ").capitalize()
-    except ValueError:
-        msg_erro()
-        pause()
-
-    try:
-        # Solicita o CPF e converte para inteiro
         cpf = int(input("Informe seu cpf apenas com números sem espaços: "))
     except ValueError:
         msg_erro()
         pause()
 
     try:
-        # Solicita a senha (sem mostrar na tela)
         senha = getpass.getpass("Informe sua senha: ")
     except ValueError:
         msg_erro()
         pause()
+
+    # Verifica se o CPF e senha estão corretos
+    if autenticar(cpf, senha, usuarios):
+        banco(cpf)  # entra no menu do banco
+    else:
+        limpar()
+        print("Usuário não encontrado")
+        pause()
+
+
+def autenticar(cpf, senha, usuarios):
+    # Aqui há um pequeno erro lógico:
+    # deve acessar usuarios[cpf]["senha"], não usuarios["senha"]
+    if cpf in usuarios and usuarios[cpf]["senha"] == senha:
+        conta = True
+    else:
+        conta = False
+
+    return conta
+
+
+# Banco (após o login)
+def banco(cpf):
+    while True:
+        usuario = usuarios[
+            cpf
+        ]  # obtém o dicionário com as informações do usuário logado
+        limpar()
+        print(f"Usuário: {usuario['nome']}")
+        print(f"Saldo: {usuario['saldo']}")
+        print(40 * "-")
+        print("1 - Depósito")
+        print("2 - Saques")
+        print("3 - Transferência")
+        print("4 - Extrato")
+
+        try:
+            e = int(
+                input("Escolha uma opção: ")
+            )  # tenta converter a escolha em número inteiro
+            return e
+        except ValueError:
+            msg_erro()
+            pause()
