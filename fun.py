@@ -56,6 +56,7 @@ def menu():
         pause()
 
 
+
 def cadastro():
     limpar()
     print("Bem vindo ao banco nexus")
@@ -87,6 +88,7 @@ def cadastro():
 
     # Retorna o dicionário para ser adicionado ao dicionário principal "usuarios"
     usuarios.update(usuario)
+
 
 
 def login():
