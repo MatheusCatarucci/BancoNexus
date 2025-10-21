@@ -1,12 +1,9 @@
 from fun import *
 
-usuarios = {}
-
 while True:
     match menu():
         case 1:
-            novo_usuario = cadastro()
-            usuarios.update(novo_usuario)
+            cadastro()
         case 2:
             login()
         case 3:
