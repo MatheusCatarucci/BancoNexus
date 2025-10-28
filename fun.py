@@ -1,51 +1,113 @@
 import os
 import getpass
-from classes import *  # importa tudo do arquivo classes.py
+from classes import *  # importa todas as classes do arquivo classes.py
 
 
-# --- FUNÇÕES DE OPERAÇÕES BANCÁRIAS (ainda não implementadas) ---
+# --- FUNÇÕES DE SISTEMA BÁSICAS ---
 def limpar():
-    os.system("cls")
+    os.system("cls")  # limpa o console
 
 
 def pause():
-    os.system("pause")
+    os.system("pause")  # pausa a execução até pressionar uma tecla
 
 
 def msg_erro():
-    print("Opção inválida, tente novamente")
+    print("Opção inválida, tente novamente")  # mensagem genérica de erro
 
 
-# --- FUNÇÕES DE OPERAÇÕES BANCÁRIAS (ainda não implementadas) ---
-def deposito():
-    pass
-    # Depósito deve adicionar um valor ao saldo da conta do usuário
+# --- FUNÇÕES DE OPERAÇÕES BANCÁRIAS ---
+def deposito(cliente):
+    limpar()
+    conta = cliente.getClasseContaCorrente()
+    print(f"Saldo atual: R${cliente.getSaldo():.2f}")
+
+    try:
+        valor = float(input("Depósito\nR$: "))  # solicita valor ao usuário
+    except ValueError:
+        msg_erro()
+        pause()
+        return
+
+    if valor > 0:
+        conta.somarSaldo(valor)  # soma o valor ao saldo
+        limpar()
+        print("Depósito realizado com sucesso!")
 
 
 def saques(cliente):
     limpar()
-    conta = cliente.getContaCorrente()
+    conta = cliente.getClasseContaCorrente()
     print(f"Saldo atual: R${cliente.getSaldo():.2f}")
+
     try:
         valor = float(input("Quanto você deseja sacar: "))
     except ValueError:
         msg_erro()
         pause()
+        return
+
     if valor > 0 and valor <= conta.getSaldo():
         conta.subitrairSaldo(valor)
         limpar()
         print("Saque realizado com sucesso!")
 
 
-def transferencia():
-    pass
-    # Transferência deve subtrair da conta do remetente e adicionar à do destinatário
+def transferencia(banco, cliente):
+    limpar()
+    print("=== Transferência ===")
+
+    try:
+        cpf_destinatario = int(input("Informe o CPF do destinatário: "))
+        valor_transferencia = float(input("Informe o valor da transferência: "))
+    except ValueError:
+        msg_erro()
+        pause()
+        return
+
+    destinatario = banco.buscarCliente(cpf_destinatario)
+    if destinatario is None:
+        limpar()
+        print("Usuário não encontrado")
+        pause()
+        return
+
+    conta_origem = cliente.getClasseContaCorrente()
+    conta_destino = (
+        destinatario.getClasseContaCorrente()
+    )  # (erro aqui, deveria ser destinatario)
+
+    if valor_transferencia <= 0:
+        limpar()
+        print("Valor inválido")
+        pause()
+        return
+
+    if conta_origem.getSaldo() < valor_transferencia:
+        print("Saldo insuficiente")
+        pause()
+        return
+
+    # realiza a transferência
+    conta_origem.subitrairSaldo(valor_transferencia)
+    conta_destino.somarSaldo(valor_transferencia)
+
+    # registra no extrato de ambos
+    cliente.getClasseExtrato().adicionarOperacao(
+        "Transferência enviada", valor_transferencia
+    )
+    destinatario.getClasseExtrato().adicionarOperacao(
+        "Transferência recebida", valor_transferencia
+    )
+
+    limpar()
+    print("Transferência realizada com sucesso")
+    pause()
 
 
 def extrato(cliente):
     limpar()
-    extrato = cliente.getClasseExtrato().mostrarExtrato()
-    print(extrato)
+    print(cliente.getClasseExtrato().mostrarExtrato())  # obtém o extrato formatado
     pause()
 
 
@@ -55,6 +117,7 @@ def menu():
     print("1 - Cadastro")
     print("2 - Login")
     print("3 - Sair")
+
     try:
         escolha = int(input("Escolha uma opção: "))  # leitura do menu principal
         return escolha
@@ -65,73 +128,60 @@ def menu():
 
 def cadastro(banco):
     limpar()
-    print("Bem vindo ao banco nexus")
+    print("Bem-vindo ao banco Nexus")
 
     try:
-        nome = input("Informe seu nome: ").capitalize()  # primeira letra maiúscula
+        nome = input("Informe seu nome: ").capitalize()  # formata o nome
+        cpf = int(input("Informe seu CPF apenas com números: "))
+        senha = getpass.getpass("Informe sua senha: ")  # senha oculta
     except ValueError:
         msg_erro()
         pause()
+        return
 
-    try:
-        cpf = int(
-            input("Informe seu CPF apenas com números sem espaços: ")
-        )  # CPF como inteiro
-    except ValueError:
-        msg_erro()
-        pause()
-
-    try:
-        senha = getpass.getpass("Informe sua senha: ")  # senha não aparece na tela
-    except ValueError:
-        msg_erro()
-        pause()
-
-    # Cria o dicionário representando o novo usuário
+    # cria um novo cliente e adiciona ao banco
     usuario = Cliente(nome=nome, cpf=cpf, senha=senha)
     banco.addCliente(usuario)
+    limpar()
+    print("Cadastro realizado com sucesso!")
+    pause()
 
 
 def login(banco):
     limpar()
-    print("Bem vindo ao banco nexus")
+    print("Bem-vindo ao banco Nexus")
 
     try:
-        cpf = int(input("Informe seu cpf apenas com números sem espaços: "))
-    except ValueError:
-        msg_erro()
-        pause()
-
-    try:
+        cpf = int(input("Informe seu CPF: "))
         senha = getpass.getpass("Informe sua senha: ")
     except ValueError:
         msg_erro()
         pause()
+        return
 
-    # Verifica se o CPF e senha estão corretos
     cliente = autenticar(banco, senha, cpf)
     if cliente:
-        main(cliente)  # entra no menu do banco
+        main(cliente, banco)  # entra no menu principal do cliente
     else:
         limpar()
         print("Usuário não encontrado")
         pause()
 
 
+# percorre todos os clientes e verifica credenciais
 def autenticar(banco, senha, cpf):
     for cliente in banco.getClientes():
         if cliente.getCpf() == cpf and cliente.getSenha() == senha:
             return cliente
-        else:
-            return None
+    return None  # só retorna None se nenhum cliente corresponder
 
 
-# Banco (após o login)
-def main(cliente):
+# Menu principal após login
+def main(cliente, banco):
     while True:
         limpar()
         print(f"Usuário: {cliente.getNome()}")
-        print(f"Saldo: {cliente.getSaldo()}")
+        print(f"Saldo: R${cliente.getSaldo():.2f}")
         print(40 * "-")
         print("1 - Depósito")
         print("2 - Saques")
@@ -144,14 +194,15 @@ def main(cliente):
         except ValueError:
             msg_erro()
             pause()
+            continue
 
         match escolha:
             case 1:
-                deposito()
+                deposito(cliente)
             case 2:
                 saques(cliente)
             case 3:
-                transferencia()
+                transferencia(banco, cliente)
             case 4:
                 extrato(cliente)
             case 5:

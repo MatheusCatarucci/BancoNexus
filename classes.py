@@ -20,23 +20,23 @@ class OperacoesFinanceiras(ABC):
         pass
 
 
-# Classe que representa o banco em si, contendo clientes
+# Classe que representa o banco e gerencia os clientes cadastrados
 class Banco:
     def __init__(self):
         self.__clientes = []  # Lista privada de clientes cadastrados
 
-    # Adiciona um cliente à lista do banco
+    # Adiciona um novo cliente ao banco
     def addCliente(self, cliente):
         self.__clientes.append(cliente)
 
-    # Busca um cliente pelo CPF e retorna o objeto correspondente
+    # Busca um cliente pelo CPF e retorna o objeto correspondente, se existir
     def buscarCliente(self, cpf):
         for cliente in self.__clientes:
-            if cliente.get_cpf() == cpf:
+            if cliente.getCpf() == cpf:
                 return cliente
-        else:
-            return None  # Retorna None se o cliente não for encontrado
+        return None  # Retorna None se o cliente não for encontrado
 
+    # Retorna a lista de todos os clientes cadastrados
     def getClientes(self):
         return self.__clientes
 
@@ -47,9 +47,9 @@ class Cliente:
         self.__nome = nome  # Nome do cliente
         self.__cpf = cpf  # CPF do cliente
         self.__senha = senha  # Senha do cliente
-        self.__contas = []  # Lista de contas do cliente (pode ter mais de uma)
-        self.__extrato = Extrato()
-        self.__contaCorrente = ContaCorrente()
+        self.__contas = []  # Lista de contas do cliente
+        self.__extrato = Extrato()  # Cria uma instância de extrato
+        self.__contaCorrente = ContaCorrente()  # Cria uma conta corrente padrão
 
     # Retorna o nome do cliente
     def getNome(self):
@@ -58,7 +58,8 @@ class Cliente:
     # Retorna o CPF do cliente
     def getCpf(self):
         return self.__cpf
-    
+
+    # Retorna a senha do cliente
     def getSenha(self):
         return self.__senha
 
@@ -66,29 +67,29 @@ class Cliente:
     def getContas(self):
         return self.__contas
 
-    # Adiciona uma nova conta ao cliente
+    # Adiciona uma nova conta à lista do cliente
     def abrirConta(self, conta):
         self.__contas.append(conta)
 
+    # Retorna o saldo da conta corrente do cliente
     def getSaldo(self):
         return self.__contaCorrente.getSaldo()
 
-    def deposito(self, valor):
-        if valor > 0:
-            self.__saldo += valor
-
+    # Retorna a instância da classe Extrato
     def getClasseExtrato(self):
         return self.__extrato
 
+    # Retorna a instância da classe ContaCorrente
     def getClasseContaCorrente(self):
         return self.__contaCorrente
 
 
+# Classe responsável por registrar as operações realizadas
 class Extrato:
     def __init__(self):
         self.__operacoes = []  # Lista de dicionários com tipo, valor e data
 
-    # Adiciona uma operação ao extrato (saque, depósito, etc.)
+    # Adiciona uma operação ao extrato
     def adicionarOperacao(self, tipo, valor):
         self.__operacoes.append(
             {
@@ -98,7 +99,7 @@ class Extrato:
             }
         )
 
-    # Exibe o extrato formatado no console
+    # Retorna o extrato formatado como texto
     def mostrarExtrato(self):
         linhas = ["=== Extrato ==="]
         for operacao in self.__operacoes:
@@ -106,98 +107,55 @@ class Extrato:
             linhas.append(linha)
         return "\n".join(linhas)
 
+    # Retorna a lista de operações (em formato bruto)
     def getExtrato(self):
         return self.__operacoes
 
 
+# Classe base para contas bancárias (abstrata)
 class Conta(OperacoesFinanceiras, ABC):
     def __init__(self, saldoInicial=0):
-        self.__saldo = saldoInicial
+        self.__saldo = saldoInicial  # Saldo inicial da conta
 
+    # Retorna o saldo atual
     def getSaldo(self):
         return self.__saldo
 
-    def getClasseExtrato(self):
-        return self.__extrato
-
+    # Soma um valor ao saldo
     def somarSaldo(self, valor):
         self.__saldo += valor
 
-    def subitratirSaldo(self, valor):
+    # Subtrai um valor do saldo
+    def subitrairSaldo(self, valor):
         self.__saldo -= valor
 
-    def registrarOperacao(self, tipo, valor):
-        self.__extrato.adicionarOperacao(tipo, valor)
 
-
+# Classe que representa uma conta corrente — versão padronizada
 class ContaCorrente(Conta):
     def __init__(self, saldoInicial=0):
         super().__init__(saldoInicial)
 
-    def sacar(self):
-        return self.__saldo
+    # Métodos obrigatórios da interface, ainda não usados
+    def sacar(self, valor):
+        pass
 
     def depositar(self, valor):
-        if valor <= 0:
-            print("Depósito inválido.")
-            return
-        self.alterarSaldo(valor)
-        self.registrarOperacao("Depósito", valor)
-        print(
-            f"Depósito de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}"
-        )
+        pass
 
     def transferir(self, valor, contaDestino):
-        if valor <= 0 or valor > self.getSaldo():
-            print("Transferência inválida.")
-            return
-
-        self.alterarSaldo(-valor)
-        self.registrarOperacao("Transferência enviada", valor)
-        contaDestino.alterarSaldo(valor)
-        contaDestino.registrarOperacao("Transferência recebida", valor)
-
-        print(
-            f"Transferência de R${valor:.2f} realizada para conta {contaDestino.getNumero()}."
-        )
-
-    def getSaldo(self):
-        return super().getSaldo()
+        pass
 
 
+# Classe que representa uma conta poupança — versão padronizada
 class ContaPoupanca(Conta):
     def __init__(self, saldoInicial=0):
-        super().__init__( saldoInicial)
+        super().__init__(saldoInicial)
 
     def sacar(self, valor):
-        if valor <= 0:
-            print("Valor inválido para saque.")
-            return
-        if self.getSaldo() - valor < 100:
-            print("Saldo mínimo de R$100,00 exigido para saques.")
-            return
-        self.__saldo -= valor
-        self.__extrato.adicionarOperacao("Saque", valor)
-        print(f"Saque de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}")
+        pass
 
     def depositar(self, valor):
-        if valor <= 0:
-            print("Depósito inválido.")
-            return
-        self.__saldo += valor
-        self.__extrato.adicionarOperacao("Depósito", valor)
-        print(
-            f"Depósito de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}"
-        )
+        pass
 
     def transferir(self, valor, contaDestino):
-        if valor <= 0 or valor > self.getSaldo():
-            print("Transferência inválida.")
-            return
-        self.__saldo -= valor
-        contaDestino.__saldo += valor
-        self.__extrato.adicionarOperacao("Transferência enviada", valor)
-        contaDestino.__extrato.adicionarOperacao("Transferência recebida", valor)
-        print(
-            f"Transferência de R${valor:.2f} realizada para conta {contaDestino.getNumero()}."
-        )
+        pass
