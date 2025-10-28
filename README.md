@@ -80,7 +80,7 @@ class Banco:
 
 ## 5️⃣ Diagrama de Classes UML
 
-![alt text](imagens/diagrama.png)
+![alt text](imagens/DIAGRAMAA.png)
 
 [Clique Aqui para acessar o Diagrama de Classes UML](https://lucid.app/lucidchart/fea066e8-6598-4cda-8514-896bf2a63cd4/edit?viewport_loc=-437%2C-562%2C3347%2C1463%2C0_0&invitationId=inv_adee2969-7860-4abe-8ec9-08f3c9c67542)
 
