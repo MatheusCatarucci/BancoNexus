@@ -42,7 +42,7 @@ Em espera...
 
 | Colaborador | Perfil |
 |-------------|--------|
-| Gabriel Leornado Vicente Cancian | [GitHub](https://github.com/GabrielLeonardoVC) |
+| Gabriel Leonardo Vicente Cancian | [GitHub](https://github.com/GabrielLeonardoVC) |
 | Gabriel Portocarrero de Oliveira | [GitHub](https://github.com/GabrielPortocarrero) |
 | Guilherme Ballestrim Sobreira | [GitHub](https://github.com/GuilhermeBallestrim) |
 | João Vitor Alves da Costa  | [GitHub](https://github.com/Joaovacosta) |
