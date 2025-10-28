@@ -150,17 +150,35 @@ def cadastro(banco):
         nome = input("Informe seu nome: ").capitalize()  # formata o nome
         cpf = int(input("Informe seu CPF apenas com números: "))
         senha = getpass.getpass("Informe sua senha: ")  # senha oculta
+        ch = int(
+            input(
+                "Criar uma conta corrente ou conta poupança?\n1 - Conta Corrente\n2 - Conta Poupança\n---> "
+            )
+        )
+
+        usuario = Cliente(nome=nome, cpf=cpf, senha=senha)
+
+        match ch:
+            case 1:
+                conta = ContaCorrente()
+            case 2:
+                conta = ContaPoupanca()
+            case _:
+                limpar()
+                print("Opção inválida.")
+                pause()
+                return
+
+        usuario.abrirConta(conta)
+        banco.addCliente(usuario)
+        # cria um novo cliente e adiciona ao banco
+        limpar()
+        print("Cadastro realizado com sucesso!")
+        pause()
     except ValueError:
         msg_erro()
         pause()
         return
-
-    # cria um novo cliente e adiciona ao banco
-    usuario = Cliente(nome=nome, cpf=cpf, senha=senha)
-    banco.addCliente(usuario)
-    limpar()
-    print("Cadastro realizado com sucesso!")
-    pause()
 
 
 def login(banco):
