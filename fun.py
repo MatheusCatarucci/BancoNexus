@@ -94,10 +94,16 @@ def transferencia(banco, cliente):
 
     # registra no extrato de ambos
     cliente.getClasseExtrato().adicionarOperacao(
-        "Transferência enviada", valor_transferencia
+        "Transferência enviada", 
+        valor_transferencia,
+        cliente.getNome(),
+        destinatario.getNome()
     )
     destinatario.getClasseExtrato().adicionarOperacao(
-        "Transferência recebida", valor_transferencia
+        "Transferência recebida", 
+        valor_transferencia,
+        cliente.getNome(),
+        destinatario.getNome()
     )
 
     limpar()

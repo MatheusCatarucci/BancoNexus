@@ -90,12 +90,14 @@ class Extrato:
         self.__operacoes = []  # Lista de dicionários com tipo, valor e data
 
     # Adiciona uma operação ao extrato
-    def adicionarOperacao(self, tipo, valor):
+    def adicionarOperacao(self, tipo, valor, remetente, destinatario):
         self.__operacoes.append(
             {
                 "tipo": tipo,
                 "valor": valor,
-                "data": datetime.now(),  # Registra a data e hora da operação
+                "data": datetime.now(),
+                "remetente": remetente,
+                "destinatario": destinatario
             }
         )
 
@@ -103,7 +105,7 @@ class Extrato:
     def mostrarExtrato(self):
         linhas = ["=== Extrato ==="]
         for operacao in self.__operacoes:
-            linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}"
+            linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}\nRemetente: {operacao['remetente']} - Destinatário: {operacao['destinatario']}"
             linhas.append(linha)
         return "\n".join(linhas)
 
