@@ -48,7 +48,8 @@ class Cliente:
         self.__cpf = cpf  # CPF do cliente
         self.__senha = senha  # Senha do cliente
         self.__contas = []  # Lista de contas do cliente (pode ter mais de uma)
-        self.__saldo = 50000
+        self.__extrato = Extrato()
+        self.__contaCorrente = ContaCorrente()
 
     # Retorna o nome do cliente
     def getNome(self):
@@ -57,6 +58,9 @@ class Cliente:
     # Retorna o CPF do cliente
     def getCpf(self):
         return self.__cpf
+    
+    def getSenha(self):
+        return self.__senha
 
     # Retorna todas as contas do cliente
     def getContas(self):
@@ -67,10 +71,17 @@ class Cliente:
         self.__contas.append(conta)
 
     def getSaldo(self):
-        return self.__saldo
+        return self.__contaCorrente.getSaldo()
 
-    def getSenha(self):
-        return self.__senha
+    def deposito(self, valor):
+        if valor > 0:
+            self.__saldo += valor
+
+    def getClasseExtrato(self):
+        return self.__extrato
+
+    def getClasseContaCorrente(self):
+        return self.__contaCorrente
 
 
 class Extrato:
@@ -89,47 +100,42 @@ class Extrato:
 
     # Exibe o extrato formatado no console
     def mostrarExtrato(self):
-        print("=== Extrato ===")
+        linhas = ["=== Extrato ==="]
         for operacao in self.__operacoes:
-            print(
-                f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}"
-            )
+            linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}"
+            linhas.append(linha)
+        return "\n".join(linhas)
+
+    def getExtrato(self):
+        return self.__operacoes
 
 
 class Conta(OperacoesFinanceiras, ABC):
-    def __init__(self, numero, saldoInicial=0):
-        self.__numero = numero
+    def __init__(self, saldoInicial=0):
         self.__saldo = saldoInicial
-        self.__extrato = []
-
-    def getNumero(self):
-        return self.__numero
 
     def getSaldo(self):
         return self.__saldo
 
-    def getExtrato(self):
+    def getClasseExtrato(self):
         return self.__extrato
 
-    def alterarSaldo(self, valor):
+    def somarSaldo(self, valor):
         self.__saldo += valor
+
+    def subitratirSaldo(self, valor):
+        self.__saldo -= valor
 
     def registrarOperacao(self, tipo, valor):
         self.__extrato.adicionarOperacao(tipo, valor)
 
 
 class ContaCorrente(Conta):
-    def __init__(self, numero, saldoInicial=0):
-        super().__init__(numero, saldoInicial)
+    def __init__(self, saldoInicial=0):
+        super().__init__(saldoInicial)
 
-    def sacar(self, valor):
-        # Verifica se o valor informado é válido
-        if valor <= 0:
-            print("Valor inválido para saque.")
-            return
-        self.alterarSaldo(-valor)
-        self.registrarOperacao("Saque", valor)
-        print(f"Saque de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}")
+    def sacar(self):
+        return self.__saldo
 
     def depositar(self, valor):
         if valor <= 0:
@@ -155,10 +161,13 @@ class ContaCorrente(Conta):
             f"Transferência de R${valor:.2f} realizada para conta {contaDestino.getNumero()}."
         )
 
+    def getSaldo(self):
+        return super().getSaldo()
+
 
 class ContaPoupanca(Conta):
-    def __init__(self, numero, saldoInicial=0):
-        super().__init__(numero, saldoInicial)
+    def __init__(self, saldoInicial=0):
+        super().__init__( saldoInicial)
 
     def sacar(self, valor):
         if valor <= 0:
