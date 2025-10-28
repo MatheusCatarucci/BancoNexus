@@ -8,7 +8,7 @@ Cada integrante do grupo tem suas seguintes funções:
 | Gabriel Leonardo Vicente Cancian | [GitHub](https://github.com/GabrielLeonardoVC) | Diagrama de Classes UML |
 | Gabriel Portocarrero de Oliveira| [GitHub](https://github.com/GabrielPortocarrero) | Documentação no README |
 | Guilherme Ballestrim Sobreira| [GitHub](https://github.com/GuilhermeBallestrim) | Construção de classes no arquivo classes.py |
-| João Vitor Alves daCosta  | [GitHub](https://github.com/Joaovacosta) | Documentação no README |
+| João Vitor Alves da Costa  | [GitHub](https://github.com/Joaovacosta) | Documentação no README |
 | Matheus Lima Catarucci | [GitHub](https://github.com/MatheusCatarucci) | Construção de funções no arquivo fun.py |
 | Moisés Gabriel Tafarello | [GitHub](https://github.com/MoisesTafarello) | Construção de classes no arquivo classes.py |
 ## 3️⃣ Requisitos Funcionais 💡
