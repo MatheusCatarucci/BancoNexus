@@ -189,3 +189,28 @@ class ContaPoupanca(Conta):
             print("Saldo mínimo de R$100,00 exigido para saques.")
             return
         super().sacar(valor)
+
+    def depositar(self, valor):
+        if valor <= 0:
+            print("Depósito inválido.")
+            return
+        self.alterar_saldo(valor)
+        self.registrar_operacao("Depósito", valor)
+        print(
+            f"Depósito de R${valor:.2f} realizado. Saldo atual: R${self.get_saldo():.2f}"
+        )
+
+    def transferir(self, valor, conta_destino):
+        if valor <= 0:
+            print("Valor inválido para transferência.")
+            return
+        if valor > self.get_saldo():
+            print("Saldo insuficiente.")
+            return
+        self.alterar_saldo(-valor)
+        conta_destino.alterar_saldo(valor)
+        self.registrar_operacao("Transferência enviada", valor)
+        conta_destino.registrar_operacao("Transferência recebida", valor)
+        print(
+            f"Transferência de R${valor:.2f} para conta {conta_destino.get_numero()} realizada."
+        )
