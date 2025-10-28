@@ -54,55 +54,71 @@ def saques(cliente):
 
 
 def transferencia(banco, cliente):
-    limpar()
-    print("=== Transferência ===")
-
-    try:
-        cpf_destinatario = int(input("Informe o CPF do destinatário: "))
-        valor_transferencia = float(input("Informe o valor da transferência: "))
-    except ValueError:
-        msg_erro()
-        pause()
-        return
-
-    destinatario = banco.buscarCliente(cpf_destinatario)
-    if destinatario is None:
+    while True:
         limpar()
-        print("Usuário não encontrado")
-        pause()
-        return
+        print("=== Transferência ===")
 
-    conta_origem = cliente.getClasseContaCorrente()
-    conta_destino = (
-        destinatario.getClasseContaCorrente()
-    )  # (erro aqui, deveria ser destinatario)
+        try:
+            cpf_destinatario = int(
+                input("Informe o CPF do destinatário (0 para cancelar): ")
+            )
+            if cpf_destinatario != 0:
+                valor_transferencia = float(input("Informe o valor da transferência: "))
+                if cpf_destinatario == cliente.getCpf():
+                    limpar()
+                    print("Você não pode realizar uma transferência para você mesmo")
+                    pause()
+                else:
+                    continue
 
-    if valor_transferencia <= 0:
-        limpar()
-        print("Valor inválido")
-        pause()
-        return
+                destinatario = banco.buscarCliente(cpf_destinatario)
+                if destinatario is None:
+                    limpar()
+                    print("Usuário não encontrado")
+                    pause()
+                    return
 
-    if conta_origem.getSaldo() < valor_transferencia:
-        print("Saldo insuficiente")
-        pause()
-        return
+                conta_origem = cliente.getClasseContaCorrente()
+                conta_destino = destinatario.getClasseContaCorrente()
 
-    # realiza a transferência
-    conta_origem.subitrairSaldo(valor_transferencia)
-    conta_destino.somarSaldo(valor_transferencia)
+                if valor_transferencia <= 0:
+                    limpar()
+                    print("Valor inválido")
+                    pause()
+                    return
 
-    # registra no extrato de ambos
-    cliente.getClasseExtrato().adicionarOperacao(
-        "Transferência enviada", valor_transferencia
-    )
-    destinatario.getClasseExtrato().adicionarOperacao(
-        "Transferência recebida", valor_transferencia
-    )
+                if conta_origem.getSaldo() < valor_transferencia:
+                    print("Saldo insuficiente")
+                    pause()
+                    return
 
-    limpar()
-    print("Transferência realizada com sucesso")
-    pause()
+                # realiza a transferência
+                conta_origem.subitrairSaldo(valor_transferencia)
+                conta_destino.somarSaldo(valor_transferencia)
+
+                # registra no extrato de ambos
+                cliente.getClasseExtrato().adicionarOperacao(
+                    "Transferência enviada",
+                    valor_transferencia,
+                    cliente.getNome(),
+                    destinatario.getNome(),
+                )
+                destinatario.getClasseExtrato().adicionarOperacao(
+                    "Transferência recebida",
+                    valor_transferencia,
+                    cliente.getNome(),
+                    destinatario.getNome(),
+                )
+
+                limpar()
+                print("Transferência realizada com sucesso")
+                pause()
+            else:
+                break
+        except ValueError:
+            msg_erro()
+            pause()
+            return
 
 
 def extrato(cliente):
