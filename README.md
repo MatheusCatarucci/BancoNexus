@@ -70,7 +70,9 @@ class Banco:
 > A explicação disso ser uma composição, é porque a existência do extrato depende da conta.
 >
 ### Sobrecarga de Métodos 🔁
-
+- É aplicado nas classes `ContaCorrente` e `ContaPoupanca`, que herdam da classe base abstrata Conta.
+> Embora os métodos possuam o mesmo nome e parâmetros, o comportamento pode variar conforme a classe que os implementa, caracterizando a sobrecarga de métodos dentro da hierarquia de herança.
+>
 ### Interfaces 🧠💬
 - A interface OperacoesFinanceiras define o contrato das operações essenciais de qualquer conta.
 > Isso obriga todas as subclasses a implementarem esses métodos, garantindo consistência no sistema e facilitando futuras expansões.
