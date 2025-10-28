@@ -66,8 +66,6 @@ def transferencia(banco, cliente):
                     limpar()
                     print("Você não pode realizar uma transferência para você mesmo")
                     pause()
-                else:
-                    continue
 
                 destinatario = banco.buscarCliente(cpf_destinatario)
                 if destinatario is None:
@@ -93,7 +91,7 @@ def transferencia(banco, cliente):
 
 
                 # realiza a transferência
-                conta_origem.subitrairSaldo(valor_transferencia)
+                conta_origem.subtrairSaldo(valor_transferencia)
                 conta_destino.somarSaldo(valor_transferencia)
 
                 # registra no extrato de ambos
@@ -113,13 +111,13 @@ def transferencia(banco, cliente):
                 limpar()
                 print("Transferência realizada com sucesso")
                 pause()
+                break
             else:
                 break
         except ValueError:
             msg_erro()
             pause()
             return
-
 
 
 def extrato(cliente):

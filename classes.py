@@ -129,7 +129,7 @@ class Conta(OperacoesFinanceiras, ABC):
         self.__saldo += valor
 
     # Subtrai um valor do saldo
-    def subitrairSaldo(self, valor):
+    def subtrairSaldo(self, valor):
         self.__saldo -= valor
 
 
