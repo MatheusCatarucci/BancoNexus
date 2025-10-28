@@ -11,4 +11,5 @@ while True:
         case 3:
             exit()
         case _:
-            pass
+            msg_erro()
+            pause()
