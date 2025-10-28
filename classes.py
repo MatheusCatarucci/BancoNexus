@@ -90,12 +90,15 @@ class Extrato:
         self.__operacoes = []  # Lista de dicionários com tipo, valor e data
 
     # Adiciona uma operação ao extrato
-    def adicionarOperacao(self, tipo, valor):
+    def adicionarOperacao(self, tipo, valor, remetente, destinatario):
         self.__operacoes.append(
             {
                 "tipo": tipo,
                 "valor": valor,
-                "data": datetime.now(),  # Registra a data e hora da operação
+                "data": datetime.now(),
+                "remetente": remetente,
+                "destinatario": destinatario,
+                # Registra a data e hora da operação
             }
         )
 
@@ -103,7 +106,7 @@ class Extrato:
     def mostrarExtrato(self):
         linhas = ["=== Extrato ==="]
         for operacao in self.__operacoes:
-            linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}"
+            linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}\nRemetente: {operacao['remetente']} - Destinatário: {operacao['destinatario']}"
             linhas.append(linha)
         return "\n".join(linhas)
 
@@ -132,30 +135,52 @@ class Conta(OperacoesFinanceiras, ABC):
 
 # Classe que representa uma conta corrente — versão padronizada
 class ContaCorrente(Conta):
-    def __init__(self, saldoInicial=0):
-        super().__init__(saldoInicial)
-
-    # Métodos obrigatórios da interface, ainda não usados
     def sacar(self, valor):
-        pass
+        if valor <= 0:
+            print("Valor inválido para saque.")
+            return
+        if valor > self.get_saldo():
+            print("Saldo insuficiente.")
+            return
+        self.alterar_saldo(-valor)
+        self.registrar_operacao("Saque", valor)
+        print(
+            f"Saque de R${valor:.2f} realizado. Saldo atual: R${self.get_saldo():.2f}"
+        )
 
     def depositar(self, valor):
-        pass
+        if valor <= 0:
+            print("Depósito inválido.")
+            return
+        self.alterar_saldo(valor)
+        self.registrar_operacao("Depósito", valor)
+        print(
+            f"Depósito de R${valor:.2f} realizado. Saldo atual: R${self.get_saldo():.2f}"
+        )
 
-    def transferir(self, valor, contaDestino):
-        pass
+    def transferir(self, valor, conta_destino):
+        if valor <= 0:
+            print("Valor inválido para transferência.")
+            return
+        if valor > self.get_saldo():
+            print("Saldo insuficiente.")
+            return
+        self.alterar_saldo(-valor)
+        conta_destino.alterar_saldo(valor)
+        self.registrar_operacao("Transferência enviada", valor)
+        conta_destino.registrar_operacao("Transferência recebida", valor)
+        print(
+            f"Transferência de R${valor:.2f} para conta {conta_destino.get_numero()} realizada."
+        )
 
 
 # Classe que representa uma conta poupança — versão padronizada
 class ContaPoupanca(Conta):
-    def __init__(self, saldoInicial=0):
-        super().__init__(saldoInicial)
-
     def sacar(self, valor):
-        pass
-
-    def depositar(self, valor):
-        pass
-
-    def transferir(self, valor, contaDestino):
-        pass
+        if valor <= 0:
+            print("Valor inválido para saque.")
+            return
+        if self.get_saldo() - valor < 100:
+            print("Saldo mínimo de R$100,00 exigido para saques.")
+            return
+        super().sacar(valor)
