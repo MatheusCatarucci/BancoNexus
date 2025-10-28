@@ -30,7 +30,27 @@ A conta deve conter as seguintes funções:
 - Todas as operações devem ser registradas em um extrato vinculado à conta.
 
 ## 4️⃣ Requisitos Técnicos - POO/Explicação do código
-Em espera...
+---
+### Classes e Objetos 🏗️
+.
+### Encapsulamento 🔒
+.
+### Herança 🧬
+.
+### Polimorfismo 🎭
+.
+### Abstração ☁️
+.
+### Associação 🔗
+.
+### Agregação ⚪➕⚫
+.
+### COmposição 🧱
+.
+### Sobrecarga de Métodos 🔁
+.
+### Interfaces 🧠💬
+---
 
 ## 5️⃣ Diagrama de Classes UML
 
