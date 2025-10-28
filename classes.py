@@ -106,8 +106,12 @@ class Extrato:
     def mostrarExtrato(self):
         linhas = ["=== Extrato ==="]
         for operacao in self.__operacoes:
-            linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}\nRemetente: {operacao['remetente']} - Destinatário: {operacao['destinatario']}"
-            linhas.append(linha)
+            if operacao["destinatario"]:
+                linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}\nRemetente: {operacao['remetente']} - Destinatário: {operacao['destinatario']}\n"
+                linhas.append(linha)
+            else:
+                linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}\n"
+                linhas.append(linha)
         return "\n".join(linhas)
 
     # Retorna a lista de operações (em formato bruto)
@@ -129,7 +133,7 @@ class Conta(OperacoesFinanceiras, ABC):
         self.__saldo += valor
 
     # Subtrai um valor do saldo
-    def subitrairSaldo(self, valor):
+    def subtrairSaldo(self, valor):
         self.__saldo -= valor
 
 
@@ -140,31 +144,39 @@ class ContaCorrente(Conta):
         if valor <= 0:
             print("Valor inválido para saque.")
             return
-        if valor > self.getSaldo():
+        if valor > self.get_saldo():
             print("Saldo insuficiente.")
             return
-        self.subitrairSaldo(valor)
-        print(f"Saque de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}")
+        self.alterar_saldo(-valor)
+        self.registrar_operacao("Saque", valor)
+        print(
+            f"Saque de R${valor:.2f} realizado. Saldo atual: R${self.get_saldo():.2f}"
+        )
 
     def depositar(self, valor):
         if valor <= 0:
             print("Depósito inválido.")
             return
-        self.somarSaldo(valor)
+        self.alterar_saldo(valor)
+        self.registrar_operacao("Depósito", valor)
         print(
-            f"Depósito de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}"
+            f"Depósito de R${valor:.2f} realizado. Saldo atual: R${self.get_saldo():.2f}"
         )
 
     def transferir(self, valor, conta_destino):
         if valor <= 0:
             print("Valor inválido para transferência.")
             return
-        if valor > self.getSaldo():
+        if valor > self.get_saldo():
             print("Saldo insuficiente.")
             return
-        self.subitrairSaldo(valor)
-        conta_destino.somarSaldo(valor)
-        print(f"Transferência de R${valor:.2f} realizada para o destinatário.")
+        self.alterar_saldo(-valor)
+        conta_destino.alterar_saldo(valor)
+        self.registrar_operacao("Transferência enviada", valor)
+        conta_destino.registrar_operacao("Transferência recebida", valor)
+        print(
+            f"Transferência de R${valor:.2f} para conta {conta_destino.get_numero()} realizada."
+        )
 
 
 # Classe que representa uma conta poupança — versão padronizada
@@ -173,28 +185,7 @@ class ContaPoupanca(Conta):
         if valor <= 0:
             print("Valor inválido para saque.")
             return
-        if self.getSaldo() - valor < 100:  # saldo mínimo de 100
+        if self.get_saldo() - valor < 100:
             print("Saldo mínimo de R$100,00 exigido para saques.")
             return
-        self.subitrairSaldo(valor)
-        print(f"Saque de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}")
-
-    def depositar(self, valor):
-        if valor <= 0:
-            print("Depósito inválido.")
-            return
-        self.somarSaldo(valor)
-        print(
-            f"Depósito de R${valor:.2f} realizado. Saldo atual: R${self.getSaldo():.2f}"
-        )
-
-    def transferir(self, valor, conta_destino):
-        if valor <= 0:
-            print("Valor inválido para transferência.")
-            return
-        if valor > self.getSaldo() - 100:  # mantém saldo mínimo
-            print("Saldo insuficiente para transferência.")
-            return
-        self.subitrairSaldo(valor)
-        conta_destino.somarSaldo(valor)
-        print(f"Transferência de R${valor:.2f} realizada para o destinatário.")
+        super().sacar(valor)

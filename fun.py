@@ -31,6 +31,12 @@ def deposito(cliente):
 
     if valor > 0:
         conta.somarSaldo(valor)  # soma o valor ao saldo
+        cliente.getClasseExtrato().adicionarOperacao(
+            "Depósito",
+            valor,
+            remetente = None,
+            destinatario = None
+        )
         limpar()
         print("Depósito realizado com sucesso!")
 
@@ -48,7 +54,14 @@ def saques(cliente):
         return
 
     if valor > 0 and valor <= conta.getSaldo():
-        conta.subitrairSaldo(valor)
+        conta.subtrairSaldo(valor)
+        cliente.getClasseExtrato().adicionarOperacao(
+            "Saque",
+            valor,
+            cliente.getNome(),
+            destinatario = None
+        )
+
         limpar()
         print("Saque realizado com sucesso!")
 
@@ -68,8 +81,6 @@ def transferencia(banco, cliente):
                     limpar()
                     print("Você não pode realizar uma transferência para você mesmo")
                     pause()
-                else:
-                    continue
 
                 destinatario = banco.buscarCliente(cpf_destinatario)
                 if destinatario is None:
@@ -93,7 +104,7 @@ def transferencia(banco, cliente):
                     return
 
                 # realiza a transferência
-                conta_origem.subitrairSaldo(valor_transferencia)
+                conta_origem.subtrairSaldo(valor_transferencia)
                 conta_destino.somarSaldo(valor_transferencia)
 
                 # registra no extrato de ambos
@@ -113,6 +124,7 @@ def transferencia(banco, cliente):
                 limpar()
                 print("Transferência realizada com sucesso")
                 pause()
+                break
             else:
                 break
         except ValueError:
@@ -148,7 +160,13 @@ def cadastro(banco):
 
     try:
         nome = input("Informe seu nome: ").capitalize()  # formata o nome
-        cpf = int(input("Informe seu CPF apenas com números: "))
+        cpf_pegar = input("Informe seu CPF (Apenas 11 números): ")
+        if not (cpf_pegar.isdigit() and len(cpf_pegar) == 11):
+            limpar()
+            print("CPF inválido. Deve conter exatamente 11 números.")
+            pause()
+            return
+        cpf = int(cpf_pegar)
         senha = getpass.getpass("Informe sua senha: ")  # senha oculta
         ch = int(
             input(
