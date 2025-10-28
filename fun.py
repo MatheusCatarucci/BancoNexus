@@ -31,6 +31,12 @@ def deposito(cliente):
 
     if valor > 0:
         conta.somarSaldo(valor)  # soma o valor ao saldo
+        cliente.getClasseExtrato().adicionarOperacao(
+            "Depósito",
+            valor,
+            remetente = None,
+            destinatario = None
+        )
         limpar()
         print("Depósito realizado com sucesso!")
 
@@ -48,61 +54,83 @@ def saques(cliente):
         return
 
     if valor > 0 and valor <= conta.getSaldo():
-        conta.subitrairSaldo(valor)
+        conta.subtrairSaldo(valor)
+        cliente.getClasseExtrato().adicionarOperacao(
+            "Saque",
+            valor,
+            cliente.getNome(),
+            destinatario = None
+        )
+
         limpar()
         print("Saque realizado com sucesso!")
 
 
 def transferencia(banco, cliente):
-    limpar()
-    print("=== Transferência ===")
-
-    try:
-        cpf_destinatario = int(input("Informe o CPF do destinatário: "))
-        valor_transferencia = float(input("Informe o valor da transferência: "))
-    except ValueError:
-        msg_erro()
-        pause()
-        return
-
-    destinatario = banco.buscarCliente(cpf_destinatario)
-    if destinatario is None:
+    while True:
         limpar()
-        print("Usuário não encontrado")
-        pause()
-        return
+        print("=== Transferência ===")
 
-    conta_origem = cliente.getClasseContaCorrente()
-    conta_destino = (
-        destinatario.getClasseContaCorrente()
-    )  # (erro aqui, deveria ser destinatario)
+        try:
+            cpf_destinatario = int(
+                input("Informe o CPF do destinatário (0 para cancelar): ")
+            )
+            if cpf_destinatario != 0:
+                valor_transferencia = float(input("Informe o valor da transferência: "))
+                if cpf_destinatario == cliente.getCpf():
+                    limpar()
+                    print("Você não pode realizar uma transferência para você mesmo")
+                    pause()
 
-    if valor_transferencia <= 0:
-        limpar()
-        print("Valor inválido")
-        pause()
-        return
+                destinatario = banco.buscarCliente(cpf_destinatario)
+                if destinatario is None:
+                    limpar()
+                    print("Usuário não encontrado")
+                    pause()
+                    return
 
-    if conta_origem.getSaldo() < valor_transferencia:
-        print("Saldo insuficiente")
-        pause()
-        return
+                conta_origem = cliente.getClasseContaCorrente()
+                conta_destino = destinatario.getClasseContaCorrente()
 
-    # realiza a transferência
-    conta_origem.subitrairSaldo(valor_transferencia)
-    conta_destino.somarSaldo(valor_transferencia)
+                if valor_transferencia <= 0:
+                    limpar()
+                    print("Valor inválido")
+                    pause()
+                    return
 
-    # registra no extrato de ambos
-    cliente.getClasseExtrato().adicionarOperacao(
-        "Transferência enviada", valor_transferencia
-    )
-    destinatario.getClasseExtrato().adicionarOperacao(
-        "Transferência recebida", valor_transferencia
-    )
+                if conta_origem.getSaldo() < valor_transferencia:
+                    print("Saldo insuficiente")
+                    pause()
+                    return
 
-    limpar()
-    print("Transferência realizada com sucesso")
-    pause()
+                # realiza a transferência
+                conta_origem.subtrairSaldo(valor_transferencia)
+                conta_destino.somarSaldo(valor_transferencia)
+
+                # registra no extrato de ambos
+                cliente.getClasseExtrato().adicionarOperacao(
+                    "Transferência enviada",
+                    valor_transferencia,
+                    cliente.getNome(),
+                    destinatario.getNome(),
+                )
+                destinatario.getClasseExtrato().adicionarOperacao(
+                    "Transferência recebida",
+                    valor_transferencia,
+                    cliente.getNome(),
+                    destinatario.getNome(),
+                )
+
+                limpar()
+                print("Transferência realizada com sucesso")
+                pause()
+                break
+            else:
+                break
+        except ValueError:
+            msg_erro()
+            pause()
+            return
 
 
 def extrato(cliente):
@@ -132,19 +160,43 @@ def cadastro(banco):
 
     try:
         nome = input("Informe seu nome: ").capitalize()  # formata o nome
-        cpf = int(input("Informe seu CPF apenas com números: "))
+        cpf_pegar = input("Informe seu CPF (Apenas 11 números): ")
+        if not (cpf_pegar.isdigit() and len(cpf_pegar) == 11):
+            limpar()
+            print("CPF inválido. Deve conter exatamente 11 números.")
+            pause()
+            return
+        cpf = int(cpf_pegar)
         senha = getpass.getpass("Informe sua senha: ")  # senha oculta
+        ch = int(
+            input(
+                "Criar uma conta corrente ou conta poupança?\n1 - Conta Corrente\n2 - Conta Poupança\n---> "
+            )
+        )
+
+        usuario = Cliente(nome=nome, cpf=cpf, senha=senha)
+
+        match ch:
+            case 1:
+                conta = ContaCorrente()
+            case 2:
+                conta = ContaPoupanca()
+            case _:
+                limpar()
+                print("Opção inválida.")
+                pause()
+                return
+
+        usuario.abrirConta(conta)
+        banco.addCliente(usuario)
+        # cria um novo cliente e adiciona ao banco
+        limpar()
+        print("Cadastro realizado com sucesso!")
+        pause()
     except ValueError:
         msg_erro()
         pause()
         return
-
-    # cria um novo cliente e adiciona ao banco
-    usuario = Cliente(nome=nome, cpf=cpf, senha=senha)
-    banco.addCliente(usuario)
-    limpar()
-    print("Cadastro realizado com sucesso!")
-    pause()
 
 
 def login(banco):
