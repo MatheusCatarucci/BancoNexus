@@ -106,8 +106,12 @@ class Extrato:
     def mostrarExtrato(self):
         linhas = ["=== Extrato ==="]
         for operacao in self.__operacoes:
-            linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}\nRemetente: {operacao['remetente']} - Destinatário: {operacao['destinatario']}"
-            linhas.append(linha)
+            if operacao["destinatario"]:
+                linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}\nRemetente: {operacao['remetente']} - Destinatário: {operacao['destinatario']}\n"
+                linhas.append(linha)
+            else:
+                linha = f"{operacao['data'].strftime('%d/%m/%Y %H:%M')} - {operacao['tipo']}: R${operacao['valor']:.2f}\n"
+                linhas.append(linha)
         return "\n".join(linhas)
 
     # Retorna a lista de operações (em formato bruto)
