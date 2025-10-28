@@ -37,35 +37,51 @@ A conta deve conter as seguintes funções:
 `Conta`(Abstrata): Faz a definição de dois tipos de contas diferentes, a `ContaCorrente` e a `ContaPoupanca`.
 Extrato: Registra as operações financeiras.
 > Cada classe reflete uma entidade diferente, no qual separa suas responsabilidades.
->
+> 
 ### Encapsulamento 🔒
 - A maioria dos atributos estão privados e são acessados via GETs/SETs.
-- 
+> Protege os dados mais sensíveis (Saldo, CPF e senha).
+>
 ### Herança 🧬
-.
+- A classe `Conta` é abstrata e é herdada por `ContaCorrente` e a `ContaPoupanca`.
+- Outros comportamentos que foram reaproveitados são `depositar()`, `sacar()`, `transferir()`
+> Evita duplicação de mesmos métodos e facilita na manutenção do código.
+>
 ### Polimorfismo 🎭
-.
+- Foi aplicado nas subclasses `ContaCorrente` e a `ContaPoupanca`. Pois o programa pode chamar `conta.sacar(valor)` independente do tipo da conta que está.
 ### Abstração ☁️
-.
+- A `conta` não pode ser instanciada diretamente, pois ela define um modelo de conta, mesmo deixando dois tipos de subclasse. 
 ### Associação 🔗
-.
+- Cliente está associado a conta, onde ambas podem existir separadamente.
+```
+self.__contas = []
+self.__contaCorrente = ContaCorrente()
+```
 ### Agregação ⚪➕⚫
-.
+- O banco tem uma lista de clientes dentro dele, mas essas contas podem existir sem o banco.
+```
+class Banco:
+    def __init__(self):
+        self.__clientes = []
+``` 
 ### Composição 🧱
 - `Conta` possui uma área de extrato.
 - O extrato só deve existir enquanto a conta existe 
 > A explicação disso ser uma composição, é porque a existência do extrato depende da conta.
 >
 ### Sobrecarga de Métodos 🔁
-.
+
 ### Interfaces 🧠💬
----
+- A interface OperacoesFinanceiras define o contrato das operações essenciais de qualquer conta.
+> Isso obriga todas as subclasses a implementarem esses métodos, garantindo consistência no sistema e facilitando futuras expansões.
+>
 
 ## 5️⃣ Diagrama de Classes UML
 
-![alt text](Diagrama de Classes UML.png)
+![alt text](diagramauml.png)
 
 [Clique Aqui para acessar o Diagrama de Classes UML](https://lucid.app/lucidchart/fea066e8-6598-4cda-8514-896bf2a63cd4/edit?invitationId=inv_adee2969-7860-4abe-8ec9-08f3c9c67542&page=0_0#)
+
 
 
 
