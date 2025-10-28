@@ -22,9 +22,19 @@ def deposito():
     # Depósito deve adicionar um valor ao saldo da conta do usuário
 
 
-def saques():
-    pass
-    # Saque deve subtrair um valor do saldo da conta do usuário
+def saques(cliente):
+    limpar()
+    conta = cliente.getContaCorrente()
+    print(f"Saldo atual: R${cliente.getSaldo():.2f}")
+    try:
+        valor = float(input("Quanto você deseja sacar: "))
+    except ValueError:
+        msg_erro()
+        pause()
+    if valor > 0 and valor <= conta.getSaldo():
+        conta.subitrairSaldo(valor)
+        limpar()
+        print("Saque realizado com sucesso!")
 
 
 def transferencia():
@@ -32,9 +42,11 @@ def transferencia():
     # Transferência deve subtrair da conta do remetente e adicionar à do destinatário
 
 
-def extrato():
-    pass
-    # Extrato deve exibir o histórico de movimentações da conta
+def extrato(cliente):
+    limpar()
+    extrato = cliente.getClasseExtrato().mostrarExtrato()
+    print(extrato)
+    pause()
 
 
 # --- FUNÇÕES DE SISTEMA ---
@@ -125,12 +137,26 @@ def main(cliente):
         print("2 - Saques")
         print("3 - Transferência")
         print("4 - Extrato")
+        print("5 - Sair")
 
         try:
-            escolha = int(
-                input("Escolha uma opção: ")
-            )  # tenta converter a escolha em número inteiro
-            return escolha
+            escolha = int(input("Escolha uma opção: "))
         except ValueError:
             msg_erro()
             pause()
+
+        match escolha:
+            case 1:
+                deposito()
+            case 2:
+                saques(cliente)
+            case 3:
+                transferencia()
+            case 4:
+                extrato(cliente)
+            case 5:
+                break
+            case _:
+                limpar()
+                msg_erro()
+                pause()
