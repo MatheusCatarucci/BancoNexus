@@ -107,8 +107,7 @@ def transferencia(banco, cliente):
 
 def extrato(cliente):
     limpar()
-    extrato = cliente.getClasseExtrato().mostrarExtrato()  # obtém o extrato formatado
-    print(extrato)
+    print(cliente.getClasseExtrato().mostrarExtrato())  # obtém o extrato formatado
     pause()
 
 
