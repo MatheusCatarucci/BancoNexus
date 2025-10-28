@@ -32,9 +32,15 @@ A conta deve conter as seguintes funções:
 ## 4️⃣ Requisitos Técnicos - POO/Explicação do código
 ---
 ### Classes e Objetos 🏗️
-.
+`Banco`: Classe responsável por armazenar contas de clientes e gerenciar buscas e cadastros.
+`Cliente`: Reprensenta uma pessoa que tem essa conta no banco.
+`Conta`(Abstrata): Faz a definição de dois tipos de contas diferentes, a `ContaCorrente` e a `ContaPoupanca`.
+Extrato: Registra as operações financeiras.
+> Cada classe reflete uma entidade diferente, no qual separa suas responsabilidades.
+>
 ### Encapsulamento 🔒
-.
+- A maioria dos atributos estão privados e são acessados via GETs/SETs.
+- 
 ### Herança 🧬
 .
 ### Polimorfismo 🎭
@@ -45,8 +51,11 @@ A conta deve conter as seguintes funções:
 .
 ### Agregação ⚪➕⚫
 .
-### COmposição 🧱
-.
+### Composição 🧱
+- `Conta` possui uma área de extrato.
+- O extrato só deve existir enquanto a conta existe 
+> A explicação disso ser uma composição, é porque a existência do extrato depende da conta.
+>
 ### Sobrecarga de Métodos 🔁
 .
 ### Interfaces 🧠💬
